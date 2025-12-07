@@ -1,0 +1,153 @@
+﻿<h2>My Cart</h2>
+<ul id="cartItems"></ul>
+<p id="cartTotal"></p>
+<button onclick="checkoutCart()">Checkout</button>
+<button onclick="clearCart()">Clear Cart</button>
+<script>
+    async function loadCart() {
+        try {
+            const res = await fetch('/api/cart/my-cart');
+            if (!res.ok) throw new Error("Failed to fetch cart");
+
+            const cart = await res.json();
+
+            const cartContainer = document.getElementById("cartItems");
+            const totalEl = document.getElementById("cartTotal");
+
+            // Clear previous content
+            cartContainer.innerHTML = "";
+            totalEl.textContent = "";
+
+            if (!cart.items || cart.items.length === 0) {
+                const li = document.createElement("li");
+                li.textContent = "Your cart is empty";
+                cartContainer.appendChild(li);
+                return;
+            }
+
+            let total = 0;
+
+            cart.items.forEach(item => {
+                
+                const li = document.createElement("li");
+                // li.textContent = `${item.productName} - $${item.unitPrice.toFixed(2)} x ${item.quantity} = $${item.totalPrice.toFixed(2)}`;
+  //                  li.innerHTML = `
+  //      ${item.productName} - $${item.unitPrice.toFixed(2)} x ${item.quantity}
+  //      = $${item.totalPrice.toFixed(2)}
+  //      <button onclick="removeItem(${item.productId})">Remove</button>
+  //  `;
+      li.innerHTML = `
+        ${item.productName} - $${item.unitPrice.toFixed(2)}
+        <br>
+        Qty:
+        <input type="number" id="qty-${item.productId}" value="${item.quantity}" min="1" style="width:60px;">
+        <button onclick="updateQuantity(${item.productId})">Update</button>
+        <button onclick="removeItem(${item.productId})" style="margin-left:10px;">Remove</button>
+        <br>
+        Item Total: $${item.totalPrice.toFixed(2)}
+        <hr>
+    `;
+                cartContainer.appendChild(li);
+
+                total += item.totalPrice;
+            });
+
+            totalEl.textContent = `Total: $${total.toFixed(2)}`;
+
+        } catch (err) {
+            console.error(err);
+            const cartContainer = document.getElementById("cartItems");
+            cartContainer.innerHTML = "<li>Unable to load cart items</li>";
+        }
+    }
+
+    // Call the function on page load
+    loadCart();
+        // async function checkoutCart() {
+        // const res = await fetch('/api/checkout/create', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify({ useServerCart: true }) tell backend to use logged-in cart
+        // });
+       //   const data = await res.json();
+      //    window.location = data.url; // redirect to Stripe checkout
+    //  }
+            async function checkoutCart() {
+        const res = await fetch('/api/cart/my-cart');
+        const cart = await res.json();
+
+        // Convert cartDto → BuyRequest
+        const buyRequest = {
+            items: cart.items.map(i => ({
+                productId: i.productId,
+                quantity: i.quantity
+            }))
+        };
+
+        const checkout = await fetch('/api/checkout/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(buyRequest)
+        });
+
+        const data = await checkout.json();
+        window.location = data.url;
+    }
+
+        
+        async function removeItem(productId) {
+        if (!confirm("Remove this item from your cart?")) return;
+
+        const res = await fetch(`/api/cart/remove/${productId}`, {
+            method: "DELETE"
+        });
+
+        if (!res.ok) {
+            alert("Failed to remove item");
+            return;
+        }
+
+        loadCart(); // refresh cart
+
+    }
+        async function clearCart() {
+        if (!confirm("Clear your entire cart?")) return;
+
+        const res = await fetch(`/api/cart/clear`, {
+            method: "DELETE"
+        });
+
+        if (!res.ok) {
+            alert("Failed to clear cart");
+            return;
+        }
+
+        loadCart(); // refresh
+    }
+        async function updateQuantity(productId) {
+        const qtyInput = document.getElementById(`qty-${productId}`);
+        const newQty = parseInt(qtyInput.value);
+
+        if (newQty <= 0) {
+            alert("Quantity must be at least 1");
+            return;
+        }
+
+        const res = await fetch(`/api/cart/update`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                productId: productId,
+                quantity: newQty
+            })
+        });
+
+        if (!res.ok) {
+            alert("Failed to update quantity");
+            return;
+        }
+
+        loadCart(); // refresh cart
+    }
+
+</script>

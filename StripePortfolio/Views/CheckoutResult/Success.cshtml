@@ -1,0 +1,46 @@
+﻿<h2>Payment Successful!</h2>
+<p>Your payment was processed correctly.</p>
+
+<div id="orderSummary">Loading order details...</div>
+
+<script>
+    const sessionId = new URLSearchParams(window.location.search).get('session_id');
+
+    if (!sessionId) {
+        document.getElementById("orderSummary").innerText = "No session ID found.";
+    } else {
+        fetch(`/api/checkout/by-session/${sessionId}`)
+            .then(r => r.json())
+            .then(data => showOrderSummary(data))
+            .catch(err => {
+                document.getElementById("orderSummary").innerText =
+                    "Unable to load order details.";
+            });
+    }
+
+       function showOrderSummary(data) {
+        let itemsHtml = "";
+
+        data.items.forEach(item => {
+            itemsHtml += `
+                <li>
+                    ${item.product.name}
+                    (x${item.quantity}) —
+                    $${(item.unitPrice * item.quantity / 100).toFixed(2)}
+                </li>
+            `;
+        });
+
+        document.getElementById("orderSummary").innerHTML = `
+            <h3>Order Summary</h3>
+            <ul>${itemsHtml}</ul>
+
+            <p><strong>Total Amount:</strong>
+                $${(data.amount / 100).toFixed(2)}
+            </p>
+
+            <p><strong>Status:</strong> ${data.status}</p>
+            <p><strong>Created:</strong> ${new Date(data.createdAt).toLocaleString()}</p>
+        `;
+    }
+</script>

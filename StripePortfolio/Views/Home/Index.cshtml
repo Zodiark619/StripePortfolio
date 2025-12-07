@@ -1,0 +1,56 @@
+﻿@model List<ProductViewModel>
+
+<h2>Products</h2>
+
+<div id="productList">
+    @foreach (var product in Model)
+    {
+        <div class="product-item">
+            <h3>@product.Name - $@product.Price.ToString("F2")</h3>
+
+            <input type="number" id="qty-@product.Id" value="1" min="1" />
+            <button onclick="addToCart(@product.Id)">Add to Cart</button>
+        </div>
+    }
+</div>
+
+<script>
+    async function addToCart(productId) {
+        const qtyInput = document.getElementById(`qty-${productId}`);
+        const quantity = parseInt(qtyInput.value);
+
+        if (quantity <= 0) {
+            alert("Quantity must be at least 1");
+            return;
+        }
+
+        // Check if user is logged in (server-side value injected)
+        const isLoggedIn = @User.Identity.IsAuthenticated.ToString().ToLower();
+
+        if (isLoggedIn) {
+            // Logged-in: add to server-side cart via API
+            const res = await fetch('/api/cart/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ productId, quantity })
+            });
+
+            if (res.ok) {
+                alert("Added to cart!");
+            } else {
+                alert("Failed to add to cart");
+            }
+        } else {
+            // Guest: use localStorage
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            const existing = cart.find(c => c.productId === productId);
+            if (existing) {
+                existing.quantity += quantity;
+            } else {
+                cart.push({ productId, quantity });
+            }
+            localStorage.setItem("cart", JSON.stringify(cart));
+            alert("Added to cart!");
+        }
+    }
+</script>

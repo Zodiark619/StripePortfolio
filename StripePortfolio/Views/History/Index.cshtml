@@ -1,0 +1,24 @@
+﻿@model List<Order>
+<a class="btn btn-primary"  href="/history">All Orders</a>
+<a class="btn btn-primary"  href="/history?filter=paid">Success Orders</a>
+<a class="btn btn-primary" href="/history?filter=pending">Pending Orders</a>
+@foreach (var order in Model.OrderBy(x=>x.CreatedAt))
+{
+    <div class="order-block">
+        <h3>Order #@order.Id — @order.Status</h3>
+        <p>Created: @order.CreatedAt.ToLocalTime().ToString("MMM dd, yyyy hh:mm tt")</p>
+
+        <ul>
+            @foreach (var item in order.Items )
+            {
+                <li>
+                    @item.Product.Name (x@(item.Quantity)) —
+                    $@(   ((item.UnitPrice* item.Quantity)/100m).ToString("f2")  )
+                </li>
+            }
+        </ul>
+
+        <p><strong>Total: $@order.TotalAmount</strong></p>
+        <hr />
+    </div>
+}
