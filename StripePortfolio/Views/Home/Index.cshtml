@@ -1,4 +1,5 @@
-﻿@model List<ProductViewModel>
+﻿@using System.Globalization
+@model List<ProductViewModel>
 
 <h2>Products</h2>
 
@@ -6,7 +7,7 @@
     @foreach (var product in Model)
     {
         <div class="product-item">
-            <h3>@product.Name - $@product.Price.ToString("F2")</h3>
+            <h3 id="product-info-@product.Id">@product.Name - $@product.Price.ToString("F2",CultureInfo.GetCultureInfo("en-US"))</h3>
 
             <input type="number" id="qty-@product.Id" value="1" min="1" />
             <button onclick="addToCart(@product.Id)">Add to Cart</button>
@@ -18,6 +19,23 @@
     async function addToCart(productId) {
         const qtyInput = document.getElementById(`qty-${productId}`);
         const quantity = parseInt(qtyInput.value);
+
+
+
+
+         const info = document.getElementById(`product-info-${productId}`).innerText;
+
+    // Example: "Juice - $233.00"
+    const [namePart, pricePart] = info.split(" - $");
+
+    const productName = namePart;
+    const productPrice = parseFloat(pricePart);
+    const productTotal=(quantity*productPrice).toFixed(2);
+
+
+
+
+
 
         if (quantity <= 0) {
             alert("Quantity must be at least 1");
@@ -36,9 +54,32 @@
             });
 
             if (res.ok) {
-                alert("Added to cart!");
+    //                Swal.fire({
+    //     toast: true,
+    //     position: "top-end",
+    //     icon: "success",
+    //     title: "Added to cart!",
+    //     showConfirmButton: false,
+    //     timer: 1500
+    // });
+        Swal.fire({
+        title: "Success",
+        text:   `${quantity} ${productName} with total $${productTotal} added to cart!`,
+        icon: "success",
+       // timer: 1500,
+      //  showConfirmButton: true
+    });
+
             } else {
-                alert("Failed to add to cart");
+                                 Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Failed to add to cart",
+        showConfirmButton: false,
+        timer: 1500
+    });
+               
             }
         } else {
             // Guest: use localStorage

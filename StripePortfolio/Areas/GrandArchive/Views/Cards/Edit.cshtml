@@ -1,0 +1,134 @@
+﻿@using StripePortfolio.Areas.GrandArchive.Models.ViewModels
+@model CardViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Edit</h1>
+
+<h4>Card</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Uuid" class="control-label"></label>
+                <input asp-for="Uuid" class="form-control" id="Uuid" name="Uuid" />
+                <span asp-validation-for="Uuid" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SelectedElementIds" class="control-label"></label>
+                <select asp-for="SelectedElementIds"
+                        asp-items="Model.ElementOptions"
+                        multiple
+                        class="form-control">
+                </select>
+                <span asp-validation-for="SelectedElementIds" class="text-danger"></span>
+            </div>
+
+
+
+
+            <div class="form-group">
+                <label asp-for="SelectedCardTypeIds" class="control-label"></label>
+                <select asp-for="SelectedCardTypeIds"
+                        asp-items="Model.CardTypeOptions"
+                        multiple
+                        class="form-control">
+                </select>
+                <span asp-validation-for="SelectedCardTypeIds" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SelectedSubtypeIds" class="control-label"></label>
+                <select asp-for="SelectedSubtypeIds"
+                        asp-items="Model.SubtypeOptions"
+                        multiple
+                        class="form-control">
+                </select>
+                <span asp-validation-for="SelectedSubtypeIds" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SelectedSetIds" class="control-label"></label>
+                <select asp-for="SelectedSetIds"
+                        asp-items="Model.SetOptions"
+                        multiple
+                        class="form-control">
+                </select>
+                <span asp-validation-for="SelectedSetIds" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RarityId" class="control-label"></label>
+                <select asp-for="RarityId"
+                        asp-items="Model.RarityOptions"
+                        class="form-control">
+                </select>
+                <span asp-validation-for="RarityId" class="text-danger"></span>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div class="form-group">
+                <label asp-for="ImageUrl" class="control-label"></label>
+                <input asp-for="ImageUrl" class="form-control" type="text" id="imageUrl" name="ImageUrl" readonly />
+                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Edit" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+<script>
+    const uuidInput = document.getElementById("Uuid");
+    const imageUrlInput = document.getElementById("imageUrl");
+
+    // Update while typing
+    uuidInput.addEventListener("input", function () {
+        const uuid = uuidInput.value.trim();
+        if (uuid) {
+            imageUrlInput.value = `https://api.gatcg.com/cards/images/${uuid}.jpg`;
+        } else {
+            imageUrlInput.value = "";
+        }
+    });
+</script>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    @*     <script>
+        // Custom client-side validator for MinElementsAttribute
+        $.validator.addMethod("minelements", function (value, element, params) {
+            return $(element).val() && $(element).val().length >= params;
+        });
+
+        $.validator.unobtrusive.adapters.addSingleVal("minelements", "mincount");
+    </script> *@
+
+
+}

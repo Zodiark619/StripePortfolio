@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using StripePortfolio.Areas.GrandArchive.Models;
 using StripePortfolio.Models;
 
 namespace StripePortfolio.Data
@@ -14,7 +15,14 @@ namespace StripePortfolio.Data
         protected ApplicationDbContext()
         {
         }
-
+        public DbSet<Card> Card { get; set; }
+        public DbSet<Element> Element { get; set; }
+        public DbSet<Rarity> Rarity { get; set; }
+        public DbSet<Set> Set { get; set; }
+        public DbSet<Subtype> Subtype { get; set; }
+        public DbSet< CardType> CardType { get; set; }
+        
+        /// ////////////////////////////////////////////////////////
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }

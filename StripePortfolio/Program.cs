@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using StripePortfolio.Data;
 using StripePortfolio.Utility;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +28,9 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 var app = builder.Build();
-
+var cultureInfo = new CultureInfo("en-US");
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -44,7 +47,9 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 app.MapRazorPages();
-
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
