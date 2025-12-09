@@ -47,7 +47,15 @@ namespace StripePortfolio.Controllers
 
             if (order == null)
                 return NotFound();
-
+            var cards = _db.CardInventories
+    .Include(ci => ci.Card)
+    .ThenInclude(x=>x.Elements)
+    .Include(c=>c.Card.CardTypes)
+    .Include(c=>c.Card.Subtypes)
+    .Include(c=>c.Card.Sets)
+    .Include(c=>c.Card.Rarity) 
+    .Where(ci => ci.OrderId == order.Id)
+    .ToList();
             var dto = new
             {
                 id = order.Id,
@@ -62,6 +70,21 @@ namespace StripePortfolio.Controllers
                     },
                     quantity = i.Quantity,
                     unitPrice = i.UnitPrice
+                }),
+
+
+
+
+                cards = cards.Select(c => new {
+                    id = c.CardId,
+                    name = c.Card.Name,
+                    element =   string.Join(", ",c.Card.Elements.Select(x=>x.Name)), 
+                    rarity =   string.Join(", ",c.Card.Rarity.Name), 
+                    subtype =   string.Join(", ",c.Card.Subtypes.Select(x=>x.Name)), 
+                    cardtype =   string.Join(", ",c.Card.CardTypes.Select(x=>x.Name)), 
+                    set =   string.Join(", ",c.Card.Sets.Select(x=>x.Name)),  
+                    quantity = c.Quantity,
+                    imageurl=c.Card.ImageUrl
                 })
             };
 

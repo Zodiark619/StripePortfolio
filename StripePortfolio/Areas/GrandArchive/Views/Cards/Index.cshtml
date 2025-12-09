@@ -1,4 +1,5 @@
-﻿@model IEnumerable<StripePortfolio.Areas.GrandArchive.Models.Card>
+﻿@using StripePortfolio.Areas.GrandArchive.Models.ViewModels
+@model List<IndexViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -9,17 +10,29 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table class="table" id="meong">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Uuid)
+                Elements
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ImageUrl)
+                Cardtype
+            </th>
+            <th>
+                Subtype
+            </th>
+            <th>
+                Set
+            </th>
+            <th>
+                Rarity
+            </th>
+            <th>
+               ImageUrl
             </th>
             <th></th>
         </tr>
@@ -28,13 +41,30 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @item.Name
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Uuid)
+                @string.Join(", " ,@item.Elements)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ImageUrl)
+                    @string.Join(", ", @item.CardTypes)
+
+            </td>
+            <td>
+                    @string.Join(", ", @item.Subtypes)
+
+            </td>
+            <td>
+                    @string.Join(", ", @item.Sets)
+
+            </td>
+            <td>
+                    @string.Join(", ", @item.Rarity)
+
+            </td>
+            <td>
+                    <img src="@item.ImageUrl" width="150" height="150"/>
+                @* @Html.DisplayFor(modelItem => item.ImageUrl) *@
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
@@ -45,3 +75,9 @@
 }
     </tbody>
 </table>
+@section Scripts{
+
+<script>
+    let table = new DataTable('#meong');
+</script>
+ }

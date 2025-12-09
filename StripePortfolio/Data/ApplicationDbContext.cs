@@ -18,7 +18,7 @@ namespace StripePortfolio.Data
         public DbSet<Card> Card { get; set; }
         public DbSet<Element> Element { get; set; }
         public DbSet<Rarity> Rarity { get; set; }
-        public DbSet<Set> Set { get; set; }
+        public DbSet<CardSet> Set { get; set; }
         public DbSet<Subtype> Subtype { get; set; }
         public DbSet< CardType> CardType { get; set; }
         
@@ -29,6 +29,7 @@ namespace StripePortfolio.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<UserInventory> UserInventories { get; set; }
+        public DbSet<CardInventory> CardInventories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -37,23 +38,18 @@ namespace StripePortfolio.Data
                 new Product
                 {
                     Id = 1,
-                    Name="Leaf",
-                    Price=13.99m
-                },
-                new Product
-                {
-                    Id = 2,
-                    Name="Table",
-                    Price=145.99m
-                },
-                new Product
-                {
-                    Id = 3,
-                    Name="Chair",
-                    Price=27.12m
+                    Name="Dawn of Ashes Pack",
+                    Price=4.99m,
+                    YieldContent= "Generate12CardsPack"
                 }
+               
                 );
+
+    //        modelBuilder.Entity<CardInventory>()
+    //.HasIndex(ci => new { ci.UserId, ci.CardId })
+    //.IsUnique();
             base.OnModelCreating(modelBuilder);
+
         }
     }
 }

@@ -22,7 +22,7 @@ namespace StripePortfolio.Areas.GrandArchive.Models
         public Rarity Rarity {  get; set; }
         [Required]
 
-        public List<Set> Sets {  get; set; }
+        public List<CardSet> Sets {  get; set; }
         private string _uuid;
         [Required]
 

@@ -11,14 +11,74 @@ using StripePortfolio.Data;
 namespace StripePortfolio.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251206144634_few3ds")]
-    partial class few3ds
+    [Migration("20251209161122_eeee")]
+    partial class eeee
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.22");
+
+            modelBuilder.Entity("CardCardSet", b =>
+                {
+                    b.Property<int>("CardsId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("SetsId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("CardsId", "SetsId");
+
+                    b.HasIndex("SetsId");
+
+                    b.ToTable("CardCardSet");
+                });
+
+            modelBuilder.Entity("CardCardType", b =>
+                {
+                    b.Property<int>("CardTypesId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CardsId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("CardTypesId", "CardsId");
+
+                    b.HasIndex("CardsId");
+
+                    b.ToTable("CardCardType");
+                });
+
+            modelBuilder.Entity("CardElement", b =>
+                {
+                    b.Property<int>("CardsId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ElementsId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("CardsId", "ElementsId");
+
+                    b.HasIndex("ElementsId");
+
+                    b.ToTable("CardElement");
+                });
+
+            modelBuilder.Entity("CardSubtype", b =>
+                {
+                    b.Property<int>("CardsId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("SubtypesId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("CardsId", "SubtypesId");
+
+                    b.HasIndex("SubtypesId");
+
+                    b.ToTable("CardSubtype");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -212,6 +272,142 @@ namespace StripePortfolio.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("StripePortfolio.Areas.GrandArchive.Models.Card", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("RarityId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Uuid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RarityId");
+
+                    b.ToTable("Card");
+                });
+
+            modelBuilder.Entity("StripePortfolio.Areas.GrandArchive.Models.CardSet", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Set");
+                });
+
+            modelBuilder.Entity("StripePortfolio.Areas.GrandArchive.Models.CardType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CardType");
+                });
+
+            modelBuilder.Entity("StripePortfolio.Areas.GrandArchive.Models.Element", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Element");
+                });
+
+            modelBuilder.Entity("StripePortfolio.Areas.GrandArchive.Models.Rarity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Rarity");
+                });
+
+            modelBuilder.Entity("StripePortfolio.Areas.GrandArchive.Models.Subtype", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Subtype");
+                });
+
+            modelBuilder.Entity("StripePortfolio.Models.CardInventory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CardId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CardId");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CardInventories");
+                });
+
             modelBuilder.Entity("StripePortfolio.Models.Cart", b =>
                 {
                     b.Property<int>("Id")
@@ -332,6 +528,10 @@ namespace StripePortfolio.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("YieldContent")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.ToTable("Products");
@@ -340,20 +540,9 @@ namespace StripePortfolio.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Leaf",
-                            Price = 13.99m
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Table",
-                            Price = 145.99m
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Chair",
-                            Price = 27.12m
+                            Name = "Dawn of Ashes Pack",
+                            Price = 4.99m,
+                            YieldContent = "Generate12CardsPack"
                         });
                 });
 
@@ -382,6 +571,66 @@ namespace StripePortfolio.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserInventories");
+                });
+
+            modelBuilder.Entity("CardCardSet", b =>
+                {
+                    b.HasOne("StripePortfolio.Areas.GrandArchive.Models.Card", null)
+                        .WithMany()
+                        .HasForeignKey("CardsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("StripePortfolio.Areas.GrandArchive.Models.CardSet", null)
+                        .WithMany()
+                        .HasForeignKey("SetsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CardCardType", b =>
+                {
+                    b.HasOne("StripePortfolio.Areas.GrandArchive.Models.CardType", null)
+                        .WithMany()
+                        .HasForeignKey("CardTypesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("StripePortfolio.Areas.GrandArchive.Models.Card", null)
+                        .WithMany()
+                        .HasForeignKey("CardsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CardElement", b =>
+                {
+                    b.HasOne("StripePortfolio.Areas.GrandArchive.Models.Card", null)
+                        .WithMany()
+                        .HasForeignKey("CardsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("StripePortfolio.Areas.GrandArchive.Models.Element", null)
+                        .WithMany()
+                        .HasForeignKey("ElementsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CardSubtype", b =>
+                {
+                    b.HasOne("StripePortfolio.Areas.GrandArchive.Models.Card", null)
+                        .WithMany()
+                        .HasForeignKey("CardsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("StripePortfolio.Areas.GrandArchive.Models.Subtype", null)
+                        .WithMany()
+                        .HasForeignKey("SubtypesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -435,6 +684,42 @@ namespace StripePortfolio.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("StripePortfolio.Areas.GrandArchive.Models.Card", b =>
+                {
+                    b.HasOne("StripePortfolio.Areas.GrandArchive.Models.Rarity", "Rarity")
+                        .WithMany("Cards")
+                        .HasForeignKey("RarityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Rarity");
+                });
+
+            modelBuilder.Entity("StripePortfolio.Models.CardInventory", b =>
+                {
+                    b.HasOne("StripePortfolio.Areas.GrandArchive.Models.Card", "Card")
+                        .WithMany()
+                        .HasForeignKey("CardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("StripePortfolio.Models.Order", "Order")
+                        .WithMany()
+                        .HasForeignKey("OrderId");
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Card");
+
+                    b.Navigation("Order");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("StripePortfolio.Models.CartItem", b =>
                 {
                     b.HasOne("StripePortfolio.Models.Cart", "Cart")
@@ -482,6 +767,11 @@ namespace StripePortfolio.Migrations
                     b.Navigation("Order");
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("StripePortfolio.Areas.GrandArchive.Models.Rarity", b =>
+                {
+                    b.Navigation("Cards");
                 });
 
             modelBuilder.Entity("StripePortfolio.Models.Cart", b =>

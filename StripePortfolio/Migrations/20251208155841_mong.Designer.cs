@@ -11,8 +11,8 @@ using StripePortfolio.Data;
 namespace StripePortfolio.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251208071419_grandarchivestart")]
-    partial class grandarchivestart
+    [Migration("20251208155841_mong")]
+    partial class mong
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

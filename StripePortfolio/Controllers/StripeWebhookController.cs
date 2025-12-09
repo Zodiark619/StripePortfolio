@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Stripe;
 using StripePortfolio.Data;
 using StripePortfolio.Models;
+using StripePortfolio.Services;
 
 namespace StripePortfolio.Controllers
 {
@@ -14,11 +15,13 @@ namespace StripePortfolio.Controllers
     {
         private readonly ApplicationDbContext _db;
         private readonly IConfiguration _config;
+        private readonly RewardService _rewardService;
 
-        public StripeWebhookController(ApplicationDbContext dbContext, IConfiguration config)
+        public StripeWebhookController(ApplicationDbContext dbContext, IConfiguration config, RewardService rewardService)
         {
             _db = dbContext;
             _config = config;
+            _rewardService = rewardService;
         }
         [HttpPost]
         public async Task<IActionResult> Handle()
@@ -47,7 +50,10 @@ namespace StripePortfolio.Controllers
                     var session = stripeEvent.Data.Object as Stripe.Checkout.Session;
 
                     var order = _db.Orders
-                          .Include(o => o.Items).FirstOrDefault(o => o.StripeCheckoutSessionId == session.Id);
+                          .Include(o => o.Items)
+                          .ThenInclude(x=>x.Product)
+                          
+                          .FirstOrDefault(o => o.StripeCheckoutSessionId == session.Id);
 
                     if (order == null)
                         break;
@@ -58,16 +64,19 @@ namespace StripePortfolio.Controllers
                     order.UpdatedAt = DateTime.UtcNow;
 
                     // Add items to user inventory
+                    //foreach (var item in order.Items)
+                    //{
+                    //     _rewardService.SendContentToInventory(item.Product, order.UserId ,order.Id);
+                    //   }
                     foreach (var item in order.Items)
                     {
-                        _db.UserInventories.Add(new UserInventory
-                        {
-                            UserId = order.UserId,
-                            ProductId = item.ProductId,
-                            Quantity = item.Quantity
-                        });
-                    }
 
+
+                        for (int i = 0; i < item.Quantity; i++) // loop per purchased pack
+                        {
+                            _rewardService.SendContentToInventory(item.Product, order.UserId, order.Id);
+                        }
+                    }
                     await _db.SaveChangesAsync();
                     break;
             }
@@ -78,3 +87,10 @@ namespace StripePortfolio.Controllers
 
 }
 
+//  var content = _rewardService.SendContentToInventory(item.Product, order.UserId);
+//_db.UserInventories.Add(new UserInventory
+//{
+//    UserId = order.UserId,
+//    ProductId = item.ProductId,
+//    Quantity = item.Quantity
+//});

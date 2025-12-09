@@ -55,7 +55,7 @@ namespace StripePortfolio.Areas.GrandArchive.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Set @set)
+        public async Task<IActionResult> Create([Bind("Id,Name")] CardSet @set)
         {
             if (ModelState.IsValid)
             {
@@ -87,7 +87,7 @@ namespace StripePortfolio.Areas.GrandArchive.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Set @set)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] CardSet @set)
         {
             if (id != @set.Id)
             {

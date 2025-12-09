@@ -175,7 +175,18 @@ namespace StripePortfolio.Areas.GrandArchive.Controllers
         .Include(c => c.Sets) // if any
         .Include(x=>x.Rarity)
         .ToListAsync();
-            return View(card);
+            List<IndexViewModel> vm = card.Select(c=>new IndexViewModel
+            {
+                Id = c.Id,
+                Name = c.Name,
+                ImageUrl = c.ImageUrl,
+                Elements=c.Elements.Select(x=>x.Name).ToList(),
+                Sets=c.Sets.Select(x=>x.Name).ToList(),
+                Subtypes=c.Subtypes.Select(x=>x.Name).ToList() ,
+                CardTypes=c.CardTypes.Select(x=>x.Name).ToList(),
+                Rarity=c.Rarity.Name ,
+            }).ToList();
+            return View(vm);
         }
 
         // GET: GrandArchive/Cards/Details/5
@@ -204,37 +215,83 @@ namespace StripePortfolio.Areas.GrandArchive.Controllers
             return View(vm);
         }
 
-        // POST: GrandArchive/Cards/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create(CardViewModel vm)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        // Repopulate dropdowns if validation fails
+        //        var vmFail = NewCardViewModelGenerate(vm);
+        //        return View(vmFail);
+        //    }
+
+        //    // Fetch existing entities and attach them to the context
+        //    var elements = await _context.Element
+        //        .Where(e => vm.SelectedElementIds.Contains(e.Id))
+        //        .ToListAsync();
+        //    foreach (var e in elements)
+        //        _context.Attach(e);
+
+        //    var cardTypes = await _context.CardType
+        //        .Where(t => vm.SelectedCardTypeIds.Contains(t.Id))
+        //        .ToListAsync();
+        //    foreach (var t in cardTypes)
+        //        _context.Attach(t);
+
+        //    var subtypes = await _context.Subtype
+        //        .Where(s => vm.SelectedSubtypeIds.Contains(s.Id))
+        //        .ToListAsync();
+        //    foreach (var s in subtypes)
+        //        _context.Attach(s);
+
+        //    var sets = await _context.Set // renamed to CardSet to avoid EF keyword clash
+        //        .Where(s => vm.SelectedSetIds.Contains(s.Id))
+        //        .ToListAsync();
+        //    foreach (var s in sets)
+        //        _context.Attach(s);
+
+        //    var rarity = await _context.Rarity
+        //        .FirstOrDefaultAsync(r => r.Id == vm.RarityId);
+        //    if (rarity != null)
+        //        _context.Attach(rarity);
+
+        //    // Create new card and assign only the attached entities
+        //    var card = new Card
+        //    {
+        //        Name = vm.Name,
+        //        Uuid = vm.Uuid,
+        //        Elements = elements,
+        //        CardTypes = cardTypes,
+        //        Subtypes = subtypes,
+        //        Sets = sets,
+        //        Rarity = rarity
+        //    };
+
+        //    _context.Card.Add(card); // Track only the new card
+        //    await _context.SaveChangesAsync();
+
+        //    return RedirectToAction(nameof(Index));
+        //}
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(  CardViewModel vm)
+        public async Task<IActionResult> Create(CardViewModel vm)
         {
-            if (ModelState.IsValid)
-            {
-                var card = new Card
-                {
-                    Name = vm.Name,
-                    Uuid = vm.Uuid,
-                    Elements = _context.Element.Where(e => vm.SelectedElementIds.Contains(e.Id)).ToList(),
-                    CardTypes = _context.CardType.Where(t => vm.SelectedCardTypeIds.Contains(t.Id)).ToList(),
-                    Subtypes = _context.Subtype.Where(s => vm.SelectedSubtypeIds.Contains(s.Id)).ToList(),
-                    Sets = _context.Set.Where(s => vm.SelectedSetIds.Contains(s.Id)).ToList(),
-                    Rarity = _context.Rarity.First(r => r.Id == vm.RarityId),
-                };
-                _context.Add(card);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            else
-            {
-                var vmFail=NewCardViewModelGenerate(vm);
-                return View(vmFail);
-            } 
-        }
+            if (!ModelState.IsValid) { var vmFail = NewCardViewModelGenerate(vm); return View(vmFail); }
+            var elements = await _context.Element.Where(e => vm.SelectedElementIds.Contains(e.Id)).ToListAsync();
+            var cardTypes = await _context.CardType.Where(t => vm.SelectedCardTypeIds.Contains(t.Id)).ToListAsync();
+            var subtypes = await _context.Subtype.Where(s => vm.SelectedSubtypeIds.Contains(s.Id)).ToListAsync(); 
+            var sets = await _context.Set 
+                // renamed from Set
+                .Where(s => vm.SelectedSetIds.Contains(s.Id)) .ToListAsync();
+                 var rarity = await _context.Rarity.FirstOrDefaultAsync(r => r.Id == vm.RarityId);
+                 var card = new Card { Name = vm.Name, Uuid = vm.Uuid, 
+                     // ImageUrl = $"https://api.gatcg.com/cards/images/{vm.Uuid}.jpg",
+                     Elements = elements, CardTypes = cardTypes, 
+                     Subtypes = subtypes, Sets = sets, Rarity = rarity };
+            _context.Add(card); await _context.SaveChangesAsync(); 
+            return RedirectToAction(nameof(Index)); }
 
-        // GET: GrandArchive/Cards/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();

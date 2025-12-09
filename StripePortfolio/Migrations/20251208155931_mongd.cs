@@ -5,7 +5,7 @@
 namespace StripePortfolio.Migrations
 {
     /// <inheritdoc />
-    public partial class efw : Migration
+    public partial class mongd : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

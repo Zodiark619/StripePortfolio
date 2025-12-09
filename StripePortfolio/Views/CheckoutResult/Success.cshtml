@@ -2,7 +2,22 @@
 <p>Your payment was processed correctly.</p>
 
 <div id="orderSummary">Loading order details...</div>
-
+<table id="cardsTable" class="display" style="width:100%">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Card Name</th>
+            <th>Elements</th>
+            <th>Rarity</th>
+            <th>Subtype</th>
+            <th>Cardtype</th>
+            <th>Set</th> 
+            <th>Quantity</th>
+            <th>Image</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
 <script>
     const sessionId = new URLSearchParams(window.location.search).get('session_id');
 
@@ -19,6 +34,38 @@
     }
 
        function showOrderSummary(data) {
+
+           if (data.cards && data.cards.length > 0) {
+        let table = $("#cardsTable").DataTable({
+            data: data.cards,
+            columns: [
+                {data:'id'},
+                { data: "name" },
+                { data: "element" },
+                { data: "rarity" },
+                { data: "subtype" },
+                { data: "cardtype" },
+                { data: "set" }, 
+                { data: "quantity" },
+                {data:"imageurl",render:function(data,type,row){
+                  if (!data) return "";
+                        return `<img src="${data}" width="60" height="60" style="object-fit:contain;">`;
+                }
+                }
+            ]
+        });
+    }
+
+
+
+
+
+
+
+
+
+
+
         let itemsHtml = "";
 
         data.items.forEach(item => {

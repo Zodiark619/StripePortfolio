@@ -1,0 +1,45 @@
+﻿@using System.Text.Json
+@using StripePortfolio.Models.ViewModels
+@model HistoryDetailsDto
+
+<h2>Order #@Model.OrderId — @Model.Status</h2>
+<p>Created: @Model.CreatedAt</p>
+<p>Total: @Model.TotalAmount.ToString("c2")</p>
+
+<table id="cardsTable">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Element</th>
+            <th>Rarity</th>
+            <th>Subtype</th>
+            <th>Cardtype</th>
+            <th>Set</th>
+            <th>Quantity</th>
+            <th>Image</th>
+        </tr>
+    </thead>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $("#cardsTable").DataTable({
+                data: @Html.Raw(JsonSerializer.Serialize(Model.Cards)),
+                columns: [
+                    { data: 'Name' },
+                    { data: 'Element' },
+                    { data: 'Rarity' },
+                    { data: 'Subtype' },
+                    { data: 'Cardtype' },
+                    { data: 'Set' },
+                    { data: 'Quantity' },
+                    { data: 'ImageUrl', render: function(data) {
+                        if (!data) return "";
+                        return `<img src="${data}" width="60" height="60" style="object-fit:contain;">`;
+                    }}
+                ]
+            });
+        });
+    </script>
+}

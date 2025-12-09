@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using StripePortfolio.Data;
+using StripePortfolio.Services;
 using StripePortfolio.Utility;
 using System.Globalization;
 
@@ -24,7 +25,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
 });
 
-
+builder.Services.AddScoped<RewardService>();
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 var app = builder.Build();
