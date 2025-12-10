@@ -1,0 +1,74 @@
+﻿@using StripePortfolio.Models.ViewModels
+@model List<CardInventoryIndexDto>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+ 
+<table class="table" id="meong">
+    <thead>
+        <tr>
+            <th>
+                Card Id
+                 </th>
+           
+            <th>
+                Card Name 
+              </th>
+            <th>
+                  Element  
+                  </th>
+<th>
+                 Rarity   
+</th>
+            <th>Subtype</th>
+            <th>Cardtype</th>
+            <th>Set</th>
+            <th>TotalQuantity</th>
+            <th>ImageUrl</th>
+                   
+                   
+                  
+               
+                  
+            
+           
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+
+                <th>
+                    @item.CardId
+                </th>
+
+                <th>
+                    @item.Name
+                </th>
+                <th>
+                    @item.Element
+                </th>
+                <th>
+                    @item.Rarity
+                </th>
+                <th>@item.Subtype</th>
+                <th>@item.Cardtype</th>
+                <th>@item.Set</th>
+                <th>@item.TotalQuantity</th>
+                <th>
+                    <img src="@item.ImageUrl" width="150" height="150"/>
+                    </th>
+        </tr>
+}
+    </tbody>
+</table>
+
+            @section Scripts{
+    <script>
+        let table = new DataTable('#meong');
+    </script>
+            }

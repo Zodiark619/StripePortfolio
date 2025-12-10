@@ -34,7 +34,7 @@ namespace StripePortfolio.Controllers
             {
                 query=query.Where(x=>x.Status==filter);
             }
-       var orders=query.ToList();
+       var orders=query.OrderByDescending(x=>x.CreatedAt).ToList();
             return View(orders);
         }
         [Authorize]

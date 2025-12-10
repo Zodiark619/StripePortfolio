@@ -2,7 +2,7 @@
 <a class="btn btn-primary"  href="/history">All Orders</a>
 <a class="btn btn-primary"  href="/history?filter=paid">Success Orders</a>
 <a class="btn btn-primary" href="/history?filter=pending">Pending Orders</a>
-@foreach (var order in Model.OrderBy(x=>x.CreatedAt))
+@foreach (var order in Model )
 {
     <a asp-action="Details" asp-route-id="@order.Id" class="order-block text-decoration-none text-dark">
         <h3>Order #@order.Id — @order.Status</h3>
@@ -13,7 +13,8 @@
             {
                 <li>
                     @item.Product.Name (x@(item.Quantity)) —
-                    $@((item.UnitPrice * item.Quantity) / 100m).ToString("c2")
+                    $@((item.UnitPrice * item.Quantity) / 100m)
+                    @* .ToString("c2") *@
                 </li>
             }
         </ul>
