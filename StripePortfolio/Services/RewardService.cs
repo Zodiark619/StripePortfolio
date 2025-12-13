@@ -53,38 +53,17 @@ namespace StripePortfolio.Services
             if (product.YieldContent == "Generate12CardsPack")
             {
                 content = Generate12CardsPack();
-            }
-
-             
-            AddCardsToInventory(userId, content, orderId);
-
+            } 
+            AddCardsToInventory(userId, content, orderId); 
             return content;
-        }
-         
-
+        } 
         private List<Card> Generate12CardsPack()
         {
             var cards = _context.Card.Include(x => x.Rarity).ToList();
             var common = cards.Where(x => x.Rarity.Name == "Common").OrderBy(x => _random.Next()).Take(8).ToList();
             var rare = cards.Where(x =>  x.Rarity.Name == "Uncommon").OrderBy(x=>_random.Next()).Take(3).ToList();
             var superrare=new List<Card>();
-            var roll = _random.Next(100);
-
-            //if (roll < 5)
-            //{
-            //    superrare = cards.Where(x => x.Rarity.Name == "Collector Super Rare"|| x.Rarity.Name == "Ultra Rare").OrderBy(x => _random.Next()).Take(1).ToList();
-
-            //}
-            //else if (roll<20)
-            //{
-            //    superrare = cards.Where(x => x.Rarity.Name == "Super Rare" ).OrderBy(x => _random.Next()).Take(1).ToList();
-
-            //}
-            //else
-            //{
-            //          superrare = cards.Where(x => x.Rarity.Name == "Rare").OrderBy(x => _random.Next()).Take(1).ToList();
-
-            //            }
+            var roll = _random.Next(100); 
             if (roll < 5)
             {
                 superrare = cards.Where(x => x.Rarity.Name == "Super Rare").OrderBy(x => _random.Next()).Take(1).ToList();
@@ -96,14 +75,27 @@ namespace StripePortfolio.Services
                 var total = new List<Card>();
             total.AddRange(superrare);
             total.AddRange(rare);
-            total.AddRange(common);
-
+            total.AddRange(common); 
             return total;
         }
 
+        //if (roll < 5)
+        //{
+        //    superrare = cards.Where(x => x.Rarity.Name == "Collector Super Rare"|| x.Rarity.Name == "Ultra Rare").OrderBy(x => _random.Next()).Take(1).ToList();
+
+        //}
+        //else if (roll<20)
+        //{
+        //    superrare = cards.Where(x => x.Rarity.Name == "Super Rare" ).OrderBy(x => _random.Next()).Take(1).ToList();
+
+        //}
+        //else
+        //{
+        //          superrare = cards.Where(x => x.Rarity.Name == "Rare").OrderBy(x => _random.Next()).Take(1).ToList();
+
+        //            }
 
 
- 
     }
 
 }

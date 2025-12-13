@@ -45,11 +45,12 @@ namespace StripePortfolio.Data
                
                 );
 
-    //        modelBuilder.Entity<CardInventory>()
-    //.HasIndex(ci => new { ci.UserId, ci.CardId })
-    //.IsUnique();
+  
             base.OnModelCreating(modelBuilder);
 
         }
+        //        modelBuilder.Entity<CardInventory>()
+        //.HasIndex(ci => new { ci.UserId, ci.CardId })
+        //.IsUnique();
     }
 }
